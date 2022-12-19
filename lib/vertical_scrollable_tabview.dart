@@ -43,33 +43,35 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
-  /// VerticalScrollPosition = is ann Animation style from scroll_to_index,
-  /// It's show the item position in listView.builder
-  final AutoScrollController _scrollController;
-
   VerticalScrollableTabView({
     required TabController tabController,
     required List<dynamic> listItemData,
+
+    /// TODO Horizontal ScrollDirection
+    // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
-    VerticalScrollPosition verticalScrollPosition = VerticalScrollPosition.begin,
+    VerticalScrollPosition verticalScrollPosition =
+        VerticalScrollPosition.begin,
     required List<Widget> slivers,
-    required scrollController,
   })  : _tabController = tabController,
         _listItemData = listItemData,
 
-        ///TODO Horizontal ScrollDirection
-        // _axisOrientation = scrollDirection,
+  ///TODO Horizontal ScrollDirection
+  // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
-        _slivers = slivers,
-        _scrollController = scrollController;
+        _slivers = slivers;
 
   @override
-  _VerticalScrollableTabViewState createState() => _VerticalScrollableTabViewState();
+  _VerticalScrollableTabViewState createState() =>
+      _VerticalScrollableTabViewState();
 }
 
 class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     with SingleTickerProviderStateMixin {
+  /// Instantiate scroll_to_index (套件提供的方法)
+  late AutoScrollController scrollController;
+
   /// When the animation is started, need to pause onScrollNotification to calculate Rect
   /// 動畫的時候暫停去運算 Rect
   bool pauseRectGetterIndex = false;
@@ -91,12 +93,13 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         VerticalScrollableTabBarStatus.isOnTap = false;
       }
     });
+    scrollController = AutoScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
-    widget._scrollController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -108,7 +111,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // ScrollNotification => https://www.jianshu.com/p/d80545454944
       child: NotificationListener<ScrollNotification>(
         child: CustomScrollView(
-          controller: widget._scrollController,
+          controller: scrollController,
           slivers: [...widget._slivers, buildVerticalSliverList()],
         ),
         onNotification: onScrollNotification,
@@ -136,7 +139,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     return SliverList(
       delegate: SliverChildListDelegate(List.generate(
         widget._listItemData.length,
-        (index) {
+            (index) {
           // 建立 itemKeys 的 Key
           itemsKeys[index] = RectGetter.createGlobalKey();
           return buildItem(index);
@@ -154,7 +157,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       child: AutoScrollTag(
         key: ValueKey(index),
         index: index,
-        controller: widget._scrollController,
+        controller: scrollController,
         child: widget._eachItemChild(category, index),
       ),
     );
@@ -168,17 +171,17 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        widget._scrollController
+        scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.begin)
             .then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.middle:
-        widget._scrollController
+        scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.middle)
             .then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.end:
-        widget._scrollController
+        scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.end)
             .then((value) => pauseRectGetterIndex = false);
         break;
@@ -249,8 +252,10 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
           if (itemRect.bottom <
-              rect.top + MediaQuery.of(context).viewPadding.top + kToolbarHeight + 56)
-            return;
+              rect.top +
+                  MediaQuery.of(context).viewPadding.top +
+                  kToolbarHeight +
+                  56) return;
       }
 
       items.add(index);
