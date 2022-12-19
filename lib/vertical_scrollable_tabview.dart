@@ -45,19 +45,18 @@ class VerticalScrollableTabView extends StatefulWidget {
 
   /// VerticalScrollPosition = is ann Animation style from scroll_to_index,
   /// It's show the item position in listView.builder
-  final AutoScrollController scrollController;
+  final AutoScrollController _scrollController;
 
   VerticalScrollableTabView({
-    scrollController = AutoScrollController(),
     required TabController tabController,
     required List<dynamic> listItemData,
 
     /// TODO Horizontal ScrollDirection
     // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
-    VerticalScrollPosition verticalScrollPosition =
-        VerticalScrollPosition.begin,
+    VerticalScrollPosition verticalScrollPosition = VerticalScrollPosition.begin,
     required List<Widget> slivers,
+    required scrollController,
   })  : _tabController = tabController,
         _listItemData = listItemData,
 
@@ -65,18 +64,15 @@ class VerticalScrollableTabView extends StatefulWidget {
         // _axisOrientation = scrollDirection,
         _eachItemChild = eachItemChild,
         _verticalScrollPosition = verticalScrollPosition,
-        _slivers = slivers;
+        _slivers = slivers,
+        _scrollController = scrollController;
 
   @override
-  _VerticalScrollableTabViewState createState() =>
-      _VerticalScrollableTabViewState();
+  _VerticalScrollableTabViewState createState() => _VerticalScrollableTabViewState();
 }
 
 class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     with SingleTickerProviderStateMixin {
-  /// Instantiate scroll_to_index (套件提供的方法)
-  late AutoScrollController scrollController;
-
   /// When the animation is started, need to pause onScrollNotification to calculate Rect
   /// 動畫的時候暫停去運算 Rect
   bool pauseRectGetterIndex = false;
@@ -256,10 +252,8 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
           if (itemRect.top > rect.bottom) return;
           // 如果 item 下方的座標 比 listView 的上方的座標 的位置的小 代表不在畫面中。
           if (itemRect.bottom <
-              rect.top +
-                  MediaQuery.of(context).viewPadding.top +
-                  kToolbarHeight +
-                  56) return;
+              rect.top + MediaQuery.of(context).viewPadding.top + kToolbarHeight + 56)
+            return;
       }
 
       items.add(index);
