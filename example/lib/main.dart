@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
 
 import 'category_section.dart';
@@ -85,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage>
               },
             ),
           ),
-        ], scrollController: ScrollController(),
+        ], scrollController: AutoScrollController(),
       ),
     );
   }
