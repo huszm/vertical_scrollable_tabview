@@ -50,9 +50,6 @@ class VerticalScrollableTabView extends StatefulWidget {
   VerticalScrollableTabView({
     required TabController tabController,
     required List<dynamic> listItemData,
-
-    /// TODO Horizontal ScrollDirection
-    // required Axis scrollDirection,
     required Widget Function(dynamic aaa, int index) eachItemChild,
     VerticalScrollPosition verticalScrollPosition = VerticalScrollPosition.begin,
     required List<Widget> slivers,

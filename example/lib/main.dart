@@ -6,7 +6,7 @@ import 'category_section.dart';
 import 'example_data.dart';
 
 void main() {
-  runApp(MyApp());
+//  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
