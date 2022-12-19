@@ -99,7 +99,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
 
   @override
   void dispose() {
-    widget.scrollController.dispose();
+    widget._scrollController.dispose();
     super.dispose();
   }
 
@@ -111,7 +111,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // ScrollNotification => https://www.jianshu.com/p/d80545454944
       child: NotificationListener<ScrollNotification>(
         child: CustomScrollView(
-          controller: widget.scrollController,
+          controller: widget._scrollController,
           slivers: [...widget._slivers, buildVerticalSliverList()],
         ),
         onNotification: onScrollNotification,
@@ -157,7 +157,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       child: AutoScrollTag(
         key: ValueKey(index),
         index: index,
-        controller: widget.scrollController,
+        controller: widget._scrollController,
         child: widget._eachItemChild(category, index),
       ),
     );
@@ -171,17 +171,17 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        widget.scrollController
+        widget._scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.begin)
             .then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.middle:
-        widget.scrollController
+        widget._scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.middle)
             .then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.end:
-        widget.scrollController
+        widget._scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.end)
             .then((value) => pauseRectGetterIndex = false);
         break;
