@@ -43,7 +43,12 @@ class VerticalScrollableTabView extends StatefulWidget {
   /// onTap: (index) => VerticalScrollableTabBarStatus.setIndex(index);
   final List<Widget> _slivers;
 
+  /// VerticalScrollPosition = is ann Animation style from scroll_to_index,
+  /// It's show the item position in listView.builder
+  final AutoScrollController scrollController;
+
   VerticalScrollableTabView({
+    scrollController = AutoScrollController(),
     required TabController tabController,
     required List<dynamic> listItemData,
 
@@ -93,13 +98,12 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
         VerticalScrollableTabBarStatus.isOnTap = false;
       }
     });
-    scrollController = AutoScrollController();
     super.initState();
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    widget.scrollController.dispose();
     super.dispose();
   }
 
@@ -111,7 +115,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       // ScrollNotification => https://www.jianshu.com/p/d80545454944
       child: NotificationListener<ScrollNotification>(
         child: CustomScrollView(
-          controller: scrollController,
+          controller: widget.scrollController,
           slivers: [...widget._slivers, buildVerticalSliverList()],
         ),
         onNotification: onScrollNotification,
@@ -157,7 +161,7 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
       child: AutoScrollTag(
         key: ValueKey(index),
         index: index,
-        controller: scrollController,
+        controller: widget.scrollController,
         child: widget._eachItemChild(category, index),
       ),
     );
@@ -171,17 +175,17 @@ class _VerticalScrollableTabViewState extends State<VerticalScrollableTabView>
     widget._tabController.animateTo(index);
     switch (widget._verticalScrollPosition) {
       case VerticalScrollPosition.begin:
-        scrollController
+        widget.scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.begin)
             .then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.middle:
-        scrollController
+        widget.scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.middle)
             .then((value) => pauseRectGetterIndex = false);
         break;
       case VerticalScrollPosition.end:
-        scrollController
+        widget.scrollController
             .scrollToIndex(index, preferPosition: AutoScrollPosition.end)
             .then((value) => pauseRectGetterIndex = false);
         break;
